@@ -5,7 +5,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movie_app/helper/Config.dart';
 import 'package:movie_app/model/Cast.dart';
+import 'package:movie_app/model/CreditVideo.dart';
 import 'package:movie_app/model/Movie.dart';
+import 'package:movie_app/model/MovieDetail.dart';
+import 'package:movie_app/model/MovieVideo.dart';
+import 'package:movie_app/screen/MovieDetailScreen.dart';
 
 class Repository{
   Future<Movie> fetchMoviePopular() async {
@@ -80,6 +84,41 @@ class Repository{
     }
   }
 
+  Future<MovieDetail> fetchDetailMovie(int id) async {
+    final response = await http.get(Config.uriDetailMovie(id));
+    print("url movie detail: ${Config.uriDetailMovie(id).toString()}");
+
+    if(response.statusCode==200){
+      print('response ${response.body.toString()}');
+      return MovieDetail.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load search movie');
+    }
+  }
+
+  Future<MovieVideo> fetchVideoMovie(int id) async {
+    final response = await http.get(Config.uriVideoMovie(id));
+    print("url movie video: ${Config.uriVideoMovie(id).toString()}");
+
+    if(response.statusCode==200){
+      print('response ${response.body.toString()}');
+      return MovieVideo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load search movie');
+    }
+  }
+
+  Future<CreditVideo> fetchCreditMovie(int id) async {
+    final response = await http.get(Config.uriCreditVideo(id));
+    print("url credit video: ${Config.uriCreditVideo(id).toString()}");
+
+    if(response.statusCode==200){
+      print('response ${response.body.toString()}');
+      return CreditVideo.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load search movie');
+    }
+  }
 
 
 

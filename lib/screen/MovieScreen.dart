@@ -4,6 +4,8 @@ import 'package:movie_app/helper/Config.dart';
 import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/repo/Repository.dart';
 
+import 'MovieDetailScreen.dart';
+
 class MovieScreen extends StatefulWidget {
   @override
   _MovieState createState() => _MovieState();
@@ -186,7 +188,7 @@ class _MovieState extends State<MovieScreen> with SingleTickerProviderStateMixin
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-              childAspectRatio: 0.75),
+              childAspectRatio: 0.75,),
                   itemCount: snapshot.data!.results!.length,
                   itemBuilder: (BuildContext context, int index ){
                 String image;
@@ -200,30 +202,44 @@ class _MovieState extends State<MovieScreen> with SingleTickerProviderStateMixin
                   margin: EdgeInsets.all(5),
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(14),
                   color: Colors.red[300]),
-                  child: Stack(
-                    fit: StackFit.loose,
-                    children: [
-                      CachedNetworkImage(imageUrl: image,
-                      imageBuilder: (context, imageProvider){
-                        return Container(
-                          height: 320,
-                          decoration: BoxDecoration(
-                            color: Colors.red[200],
-                            image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover
+                  child: InkResponse(
+                    onTap: (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                          builder: (context) => MovieDetailScreen(movieData: snapshot.data!.results![index]),
+                      // Pass the arguments as part of the RouteSettings. The
+                      // DetailScreen reads the arguments from these settings.
+                      settings: RouteSettings(
+                      arguments: snapshot.data!.results![index],
+                      ),
+                      ));
+                    },
+                    child: Stack(
+                      fit: StackFit.loose,
+                      children: [
+                        CachedNetworkImage(imageUrl: image,
+                        imageBuilder: (context, imageProvider){
+                          return Container(
+                            height: 320,
+                            decoration: BoxDecoration(
+                              color: Colors.red[200],
+                              image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover
+                              ),
+                              borderRadius: BorderRadius.circular(14),
                             ),
-                            borderRadius: BorderRadius.circular(14),
+                          );
+                        },
+                          placeholder: (context, url) => Image.network("https://venngage-wordpress.s3.amazonaws.com/uploads/2018/02/blog_header-1.png"),
+                          errorWidget: (context, url, error) => Center(
+                            child: Icon(Icons.broken_image_rounded,
+                              size: 80.0,),
                           ),
-                        );
-                      },
-                        placeholder: (context, url) => Image.network("https://venngage-wordpress.s3.amazonaws.com/uploads/2018/02/blog_header-1.png"),
-                        errorWidget: (context, url, error) => Center(
-                          child: Icon(Icons.broken_image_rounded,
-                            size: 80.0,),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 );
               },physics: ScrollPhysics(),

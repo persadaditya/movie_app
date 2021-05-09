@@ -10,6 +10,10 @@ class Config{
     return "https://image.tmdb.org/t/p/w500" + pathImage;
   }
 
+  static String thumbnailYoutube(String key){
+    return "https://img.youtube.com/vi/$key/sddefault.jpg";
+  }
+
   static Map<String, dynamic> queryApiKey(){
     return{"api_key": apiKey};
   }
@@ -40,6 +44,18 @@ class Config{
   
   static Uri uriCaster(){
     return Uri.https(baseUrl, "/3/person/popular", queryApiKey());
+  }
+
+  static Uri uriDetailMovie(int id){
+    return Uri.https(baseUrl, "/3/movie/$id", queryApiKey());
+  }
+
+  static Uri uriVideoMovie(int id){
+    return Uri.https(baseUrl, "/3/movie/$id/videos", queryApiKey());
+  }
+
+  static Uri uriCreditVideo(int id){
+    return Uri.https(baseUrl, "3/movie/$id/credits", queryApiKey());
   }
 
 

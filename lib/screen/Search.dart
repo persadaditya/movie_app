@@ -4,6 +4,8 @@ import 'package:movie_app/helper/Config.dart';
 import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/repo/Repository.dart';
 
+import 'MovieDetailScreen.dart';
+
 class Search extends StatefulWidget {
   @override
   _SearchState createState() => _SearchState();
@@ -90,40 +92,54 @@ class _SearchState extends State<Search> {
                     margin: EdgeInsets.all(5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(14),
                         color: Colors.red[300]),
-                    child: Stack(
-                      fit: StackFit.loose,
-                      children: [
-                        CachedNetworkImage(imageUrl: image,
-                          imageBuilder: (context, imageProvider){
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red[200],
-                                image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover
-                                ),
-                                borderRadius: BorderRadius.circular(14),
+                    child: InkResponse(
+                      onTap: (){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieDetailScreen(movieData: snapshot.data!.results![index]),
+                              // Pass the arguments as part of the RouteSettings. The
+                              // DetailScreen reads the arguments from these settings.
+                              settings: RouteSettings(
+                                arguments: snapshot.data!.results![index],
                               ),
-                            );
-                          },
-                          placeholder: (context, url) => Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          errorWidget: (context, url, error) => Padding(
-                            padding: EdgeInsets.all(14.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(child: Center(child: Icon(Icons.broken_image_rounded, size: 60,))),
-                                Text(snapshot.data!.results![index].title!,
-                                  style: TextStyle(fontWeight: FontWeight.bold),),
-                                Text("Language: ${snapshot.data!.results![index].originalLanguage!}"),
-                              ],
+                            ));
+                      },
+                      child: Stack(
+                        fit: StackFit.loose,
+                        children: [
+                          CachedNetworkImage(imageUrl: image,
+                            imageBuilder: (context, imageProvider){
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.red[200],
+                                  image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              );
+                            },
+                            placeholder: (context, url) => Center(
+                              child: CircularProgressIndicator(),
                             ),
-                          ),
-                        )
-                      ],
+                            errorWidget: (context, url, error) => Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(child: Center(child: Icon(Icons.broken_image_rounded, size: 60,))),
+                                  Text(snapshot.data!.results![index].title!,
+                                    style: TextStyle(fontWeight: FontWeight.bold),),
+                                  Text("Language: ${snapshot.data!.results![index].originalLanguage!}"),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 },physics: ScrollPhysics(),
