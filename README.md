@@ -7,6 +7,11 @@ Movie App from TMDB API
 ### Movie App
 This project is to display movie.
 
+![Home](images/Group%208.png?raw=true)
+![Detail](images/Group%209.png?raw=true)
+![Search & Cast](images/Group%2010.png?raw=true)
+![Environment](images/Group%2011.png?raw=true)
+
 You can see latest, now play, popular, and coming soon also search movie
 then you can see all caster too.
 

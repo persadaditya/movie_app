@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.red
       ),
       home: MainPage(),
     );
@@ -52,32 +52,41 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         body: listWidget[_currentIndex],
         bottomNavigationBar:
-        SalomonBottomBar(
-          margin: EdgeInsets.symmetric(horizontal: 70, vertical: 16),
-          currentIndex: _currentIndex,
-          onTap: (i) => setState(() => _currentIndex = i),
-          items: [
-            /// Home
-            SalomonBottomBarItem(
-              icon: Icon(Icons.movie, ),
-              title: Text("Movie"),
-              selectedColor: Colors.red,
-            ),
-
-            /// Likes
-            SalomonBottomBarItem(
-              icon: Icon(Icons.search_rounded, ),
-              title: Text("Search"),
-              selectedColor: Colors.pink,
-            ),
-
-            /// Search
-            SalomonBottomBarItem(
-              icon: Icon(Icons.person_pin_outlined, ),
-              title: Text("Cast"),
-              selectedColor: Colors.teal,
-            ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration( color: Colors.white, boxShadow: [
+            BoxShadow(offset: Offset.fromDirection(3), color: Colors.black87,
+            blurRadius: 24)
           ],
+            borderRadius: BorderRadius.vertical(top: Radius.circular(40))
+          ),
+          child: SalomonBottomBar(
+            margin: EdgeInsets.symmetric(horizontal: 64, vertical: 14),
+            currentIndex: _currentIndex,
+            onTap: (i) => setState(() => _currentIndex = i),
+            items: [
+              /// Home
+              SalomonBottomBarItem(
+                icon: Icon(Icons.movie, ),
+                title: Text("Movie"),
+                selectedColor: Colors.red,
+              ),
+
+              /// Likes
+              SalomonBottomBarItem(
+                icon: Icon(Icons.search_rounded, ),
+                title: Text("Search"),
+                selectedColor: Colors.red,
+              ),
+
+              /// Search
+              SalomonBottomBarItem(
+                icon: Icon(Icons.person_pin_outlined, ),
+                title: Text("Cast"),
+                selectedColor: Colors.red,
+              ),
+            ],
+          ),
         ),
       ),
     );

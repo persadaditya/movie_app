@@ -44,13 +44,28 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(leading: GestureDetector(
-            child: Icon(Icons.chevron_left_rounded,size: 36,),
-            onTap: ()=> Navigator.pop(context),),
+          SliverAppBar(leading: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ClipOval(
+              child: Material(
+                elevation: 10,
+                color: Colors.white70,
+                shadowColor: Colors.black45,
+                child: InkWell(child: SizedBox(
+                    child: Icon(Icons.chevron_left_rounded,
+                        size: 24, color: Colors.black45
+                    )
+                )
+                ,splashColor: Colors.black45,
+                onTap: ()=> Navigator.pop(context),
+                ),
+              ),
+            ),
+          ),
             expandedHeight: 200,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(movieData.title!),
+              title: Text(movieData.title!, textAlign: TextAlign.center, maxLines: 2,),
               background: Image.network(Config.imageUrl(backdrop),
                 fit: BoxFit.cover,),
           ),
@@ -147,9 +162,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(movieData.originalTitle!,
+                                    Text(movieData.originalTitle!, maxLines: 2,
                                     style: TextStyle(fontWeight: FontWeight.bold,
-                                    fontSize: 24),),
+                                    fontSize: 24, ),),
 
                                     Row(
                                       children: [
@@ -299,7 +314,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                 ) :
                                 SizedBox(
                                   height: 190,
-                                  child: ListView.builder(itemCount: detail.length,
+                                  child: ListView.builder(itemCount: snapshot.data!.results!.length,
                                       scrollDirection: Axis.horizontal,
                                       shrinkWrap: true,
                                       itemBuilder: (context, index){
@@ -354,12 +369,12 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(horizontal:8.0,vertical: 4),
-                                                child: Text(detail[index].name!, style:
+                                                child: Text(snapshot.data!.results![index].name!, style:
                                                 TextStyle(fontWeight: FontWeight.bold),maxLines: 1,),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(horizontal:8.0),
-                                                child: Text(detail[index].type!, style:
+                                                child: Text(snapshot.data!.results![index].type!, style:
                                                 TextStyle(color: Colors.black38),),
                                               )
                                             ],
