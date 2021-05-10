@@ -88,7 +88,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   snapshot.data!.overview!.isEmpty ? "No synopsis found":
                       snapshot.data!.overview!;
 
-                  String language = snapshot.data!.spokenLanguages==null ? "No data" : snapshot.data!.spokenLanguages![0].name! ;
+                  String language = snapshot.data!.spokenLanguages==null
+                      ||snapshot.data!.spokenLanguages!.length==0 ? "No data" : snapshot.data!.spokenLanguages![0].name! ;
                   String popularity = snapshot.data!.popularity!.toString();
                   String voteCount = snapshot.data!.voteCount!.toString();
 
@@ -285,25 +286,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                           child: FutureBuilder<MovieVideo>(
                             future: futureVideo,
                               builder: (context, snapshot){
-                              print(Config.thumbnailYoutube(snapshot.data!.results![0].key!),);
-                              print("length trailer: ${snapshot.data!.results!.length}");
                               List<MovieVideoData> detail = List<MovieVideoData>.empty(growable: true);
-
-                              if(snapshot.data!.results==null|| snapshot.data!.results!.length==0){
-                                detail.add(MovieVideoData(name: "No trailer Data",
-                                type: "not found", key: "sdws"));
-                              } else {
-                                detail.addAll(snapshot.data!.results!);
-                              }
-                              print("new detail: ${detail.toString()}" );
 
                               if(snapshot.hasData){
 
-                                return detail.isEmpty || detail.length == 0 ?
+                                return snapshot.data!.results!.isEmpty || snapshot.data!.results!.length == 0 ?
                                 Container(
-                                  height: 190,
+                                  height: 130,
                                   child: Center(
-                                    child: Text("Tidak ada trailer"),
+                                    child: Text("no data trailer"),
                                   ),
                                 ) :
                                 SizedBox(
