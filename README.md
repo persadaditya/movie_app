@@ -11,10 +11,12 @@ This project is to display movie.
 ![now playing](images/home1.png?raw=true)  ![popular](images/home2.png?raw=true)  ![coming soon](images/home3.png?raw=true)
 
 #### Search & detail
-![search list](images/search-list.png?raw=true)  ![search detail](images/search-detail1.png?raw=true)  ![search detail](images/search-detail2.png?raw=true)
+![search list](images/search-list.png?raw=true)  
+![search detail](images/search-detail2.png?raw=true)  ![search detail](images/search-detail1.png?raw=true)
 
 #### Favorite movie
-![favorite list](images/fav-list.png?raw=true)  ![favorite detail](images/fav-detail1.png?raw=true)  ![favorite detail](images/fav-detail2.png?raw=true)
+![favorite list](images/fav-list.png?raw=true)  
+![favorite detail](images/fav-detail1.png?raw=true)  ![favorite detail](images/fav-detail2.png?raw=true)
 
 #### cast movie
 ![cast](images/cast.png?raw=true)
