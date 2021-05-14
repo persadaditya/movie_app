@@ -9,7 +9,6 @@ import 'package:movie_app/model/CreditVideo.dart';
 import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/model/MovieDetail.dart';
 import 'package:movie_app/model/MovieVideo.dart';
-import 'package:movie_app/screen/MovieDetailScreen.dart';
 
 class Repository{
   Future<Movie> fetchMoviePopular() async {

@@ -12,20 +12,22 @@ class Artist extends StatefulWidget {
 class _ArtistState extends State<Artist> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Cast", style: TextStyle(
-                fontSize: 30, fontWeight: FontWeight.bold,
-                color: Colors.teal[800]
-            ),),
-            Flexible(child: castWidget(Repository().fetchCaster()))
-          ],
-        ),
-      )
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 16, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Cast", style: TextStyle(
+                  fontSize: 30, fontWeight: FontWeight.bold,
+                  color: Colors.red[800]
+              ),),
+              Flexible(child: castWidget(Repository().fetchCaster()))
+            ],
+          ),
+        )
+      ),
     );
   }
 

@@ -35,35 +35,37 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.only(top: 16.0, left: 16, right: 16,),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Search", style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.bold,
-              color: Colors.pink[800]
-            ),),
-            Padding(
-              padding:EdgeInsets.symmetric(vertical: 12),
-              child: TextField(controller: _searchController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Search your movie here"
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 16, right: 16,),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Search", style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold,
+                color: Colors.pink[800]
+              ),),
+              Padding(
+                padding:EdgeInsets.symmetric(vertical: 12),
+                child: TextField(controller: _searchController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(36)),
+                  hintText: "Search your movie here"
+                ),
+                  onSubmitted: (s){
+                  print("textField: $s");
+                  setState(() {
+                    search = s;
+                  });
+                  },
+                ),
               ),
-                onSubmitted: (s){
-                print("textField: $s");
-                setState(() {
-                  search = s;
-                });
-                },
-              ),
-            ),
-            Flexible(child: movieType(Repository().fetchSearchMovie(search)))
-          ],
-        ),
-      )
+              Flexible(child: movieType(Repository().fetchSearchMovie(search)))
+            ],
+          ),
+        )
+      ),
     );
   }
 
