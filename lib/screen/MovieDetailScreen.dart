@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -10,6 +12,8 @@ import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/model/MovieDetail.dart';
 import 'package:movie_app/model/MovieVideo.dart';
 import 'package:movie_app/repo/Repository.dart';
+import 'package:movie_app/screen/YoutubeScreen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final MovieData movieData;
@@ -383,71 +387,86 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       child: Text("no data trailer"),
                     ),
                   ) :
+
                   SizedBox(
                     height: SizeConfig.safeBlockVertical * 30,
                     child: ListView.builder(itemCount: snapshot.data!.results!.length,
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemBuilder: (context, index){
-                          return Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  fit: StackFit.loose,
-                                  children: [
-                                    CachedNetworkImage(imageUrl: Config.thumbnailYoutube(snapshot.data!.results![index].key!),
-                                      imageBuilder: (context, imageProvider){
-                                        return Container(
-                                          width: SizeConfig.safeBlockHorizontal *60,
-                                          height: SizeConfig.safeBlockVertical *20,
-                                          margin: EdgeInsets.only(right: 16),
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,),
-                                            borderRadius: BorderRadius.all(Radius.circular(10),
+
+                          String youtubeId = snapshot.data!.results![index].id!;
+                          String key = snapshot.data!.results![index].key!;
+                          print("youtubeId= $youtubeId | key= $key");
+                          return InkResponse(
+                            onTap: (){
+                              Navigator.push(context,
+                                  MaterialPageRoute(
+                                    builder: (context) => YoutubeScreen(
+                                      youtubeId: snapshot.data!.results![index].key!,
+                                      data: movieData,),
+                                  )
+                              );
+                            },
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Stack(
+                                    fit: StackFit.loose,
+                                    children: [
+                                      CachedNetworkImage(imageUrl: Config.thumbnailYoutube(snapshot.data!.results![index].key!),
+                                        imageBuilder: (context, imageProvider){
+                                          return Container(
+                                            width: SizeConfig.safeBlockHorizontal *60,
+                                            height: SizeConfig.safeBlockVertical *20,
+                                            margin: EdgeInsets.only(right: 16),
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,),
+                                              borderRadius: BorderRadius.all(Radius.circular(10),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      placeholder: (context, url)=> Container(
+                                          );
+                                        },
+                                        placeholder: (context, url)=> Container(
+                                            width: 240,
+                                            height: 140,
+                                            child: Image.network("https://image.freepik.com/free-vector/loading-icon_167801-436.jpg")),
+                                        errorWidget: (context, url, error) => Container(
                                           width: 240,
                                           height: 140,
-                                          child: Image.network("https://image.freepik.com/free-vector/loading-icon_167801-436.jpg")),
-                                      errorWidget: (context, url, error) => Container(
-                                        width: 240,
-                                        height: 140,
-                                        child: Center(
-                                          child: Icon(Icons.broken_image_rounded,
-                                            size: 80.0,),
+                                          child: Center(
+                                            child: Icon(Icons.broken_image_rounded,
+                                              size: 80.0,),
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                    Container(
-                                      height: 140,
-                                      width: 240,
-                                      child: Center(
-                                        child: Icon(Icons.play_circle_fill, size: 48,
-                                          color: Colors.white,),
+                                      Container(
+                                        height: 140,
+                                        width: 240,
+                                        child: Center(
+                                          child: Icon(Icons.play_circle_fill, size: 48,
+                                            color: Colors.white,),
+                                        ),
                                       ),
-                                    )
 
-
-                                  ],
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal:8.0,vertical: 4),
-                                  child: Text(snapshot.data!.results![index].name!, style:
-                                  TextStyle(fontWeight: FontWeight.bold),maxLines: 1,),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal:8.0),
-                                  child: Text(snapshot.data!.results![index].type!, style:
-                                  TextStyle(color: Colors.black38),),
-                                )
-                              ],
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal:8.0,vertical: 4),
+                                    child: Text(snapshot.data!.results![index].name!, style:
+                                    TextStyle(fontWeight: FontWeight.bold),maxLines: 1,),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal:8.0),
+                                    child: Text(snapshot.data!.results![index].type!, style:
+                                    TextStyle(color: Colors.black38),),
+                                  )
+                                ],
+                              ),
                             ),
                           );
                         }),
@@ -618,6 +637,32 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         ),
       ],
     );
+  }
+
+  _launchURL() async {
+    if (Platform.isIOS) {
+      if (await canLaunch(
+          'youtube://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw')) {
+        await launch(
+            'youtube://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw',
+            forceSafariVC: false);
+      } else {
+        if (await canLaunch(
+            'https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw')) {
+          await launch(
+              'https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw');
+        } else {
+          throw 'Could not launch https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw';
+        }
+      }
+    } else {
+      const url = 'https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
   }
 
   Widget buildFab(){

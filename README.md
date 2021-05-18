@@ -7,18 +7,18 @@ Movie App from TMDB API
 ### Movie App
 This project is to display movie.
 
-#### Home Screen
+### Home Screen
 ![now playing](images/home1.png?raw=true)  ![popular](images/home2.png?raw=true)  ![coming soon](images/home3.png?raw=true)
 
-#### Search & detail
+### Search & detail
 ![search list](images/search-list.png?raw=true)  
 ![search detail](images/search-detail2.png?raw=true)  ![search detail](images/search-detail1.png?raw=true)
 
-#### Favorite movie
+### Favorite movie
 ![favorite list](images/fav-list.png?raw=true)  
 ![favorite detail](images/fav-detail1.png?raw=true)  ![favorite detail](images/fav-detail2.png?raw=true)
 
-#### cast movie
+### cast movie
 ![cast](images/cast.png?raw=true)
 
 You can see latest, now play, popular, and coming soon also search movie
@@ -27,8 +27,9 @@ then you can see all caster too.
 This application get data from [The Movie DB Api](https://www.themoviedb.org/settings/api)
 you can start this project by replacing with your own apiKey at helper/config.dart file
 
-### new added! 
-persist data with sqflite-library (favorite screen)
+#### new added! persist data with sqflite-library (favorite screen)
+#### new added! youtube view screen for trailer
+
 
 This application also inspired by this design:
 - [Movies app](https://dribbble.com/shots/6715286-Movies-app) from [MUSE](https://dribbble.com/siyumiao)
@@ -40,6 +41,7 @@ Then I use some of useful widget like this:
 - [TabBar and TabBarView](https://api.flutter.dev/flutter/material/TabBar-class.html)
 - [Grid View](https://api.flutter.dev/flutter/widgets/GridView-class.html)
 - [Persist Data - sqflite](https://flutter.dev/docs/cookbook/persistence/sqlite)
+- [Youtube Player Flutter](https://pub.dev/packages/youtube_player_flutter)
 
 
 ### Created from flutter
