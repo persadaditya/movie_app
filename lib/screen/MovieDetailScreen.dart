@@ -487,10 +487,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     padding: EdgeInsets.zero,
                     physics: BouncingScrollPhysics(),
                     shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
                     gridDelegate:
                     SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.75,
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.25,
                     ), itemBuilder: (BuildContext context, int index){
 
                     String image = snapshot.data!.cast![index].profilePath == null ? " " : Config.imageUrl(snapshot.data!.cast![index].profilePath!);
@@ -677,8 +678,14 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   void clickFavorite(bool isFav){
     if(isFav){
       handler.deleteFavMovie(movieData.id!);
+      var snackBar = SnackBar(content: Text("remove from favorite"),
+        duration: Duration(seconds: 1),);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       handler.insertFavMovie(movieData);
+      var snackBar = SnackBar(content: Text("added from favorite"),
+        duration: Duration(seconds: 1),);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
     });

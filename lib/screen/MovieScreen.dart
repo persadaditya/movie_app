@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:movie_app/helper/Config.dart';
 import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/repo/Repository.dart';
@@ -16,23 +17,90 @@ class _MovieState extends State<MovieScreen> with SingleTickerProviderStateMixin
   late Future<MovieData> futureMovie;
   late Future<Movie> futureCat;
   late TabController _tabController;
+  late PagingController<int, MovieData> _pagingNow;
+  late PagingController<int, MovieData> _pagingPop;
+  late PagingController<int, MovieData> _pagingUpcoming;
   int index = 0;
 
   @override
   void initState() {
-    super.initState();
 
     futureMovie = Repository().fetchLatestMovie();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       setState(() {
         index = _tabController.index;
+        _pagingNow.refresh();
+        _pagingPop.refresh();
+        _pagingUpcoming.refresh();
       });
     });
 
+    _pagingNow = PagingController<int, MovieData>(firstPageKey: 1);
+    _pagingNow.addPageRequestListener((pageKey) {_fetchPage(pageKey, index);});
 
+    _pagingPop = PagingController<int, MovieData>(firstPageKey: 1);
+    _pagingPop.addPageRequestListener((pageKey) {_fetchPage(pageKey, index);});
+
+    _pagingUpcoming = PagingController<int, MovieData>(firstPageKey: 1);
+    _pagingUpcoming.addPageRequestListener((pageKey) {_fetchPage(pageKey, index);});
+
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    _pagingNow.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchPage(int pageKey, int index) async {
+
+    if(index==0){
+      try {
+        final newUpcoming = await Repository().fetchMoviePlaying(pageKey);
+        final isLastPage = newUpcoming.results!.length < 20;
+        if(isLastPage){
+          _pagingNow.appendLastPage(newUpcoming.results!);
+        } else {
+          final nextPageKey = pageKey + 1;
+          _pagingNow.appendPage(newUpcoming.results!, nextPageKey);
+        }
+      } catch (error){
+        _pagingNow.error = error;
+      }
+    } else if(index==1){
+      print("index 1: popular?");
+      try {
+        final newUpcoming = await Repository().fetchMoviePopular(pageKey);
+        final isLastPage = newUpcoming.results!.length < 20;
+        if(isLastPage){
+          _pagingPop.appendLastPage(newUpcoming.results!);
+        } else {
+          final nextPageKey = pageKey + 1;
+          _pagingPop.appendPage(newUpcoming.results!, nextPageKey);
+        }
+      } catch (error){
+        _pagingPop.error = error;
+      }
+    } else if(index==2){
+      print("index 2: upcoming?");
+      try {
+        final newUpcoming = await Repository().fetchMovieUpcoming(pageKey);
+        final isLastPage = newUpcoming.results!.length < 20;
+        if(isLastPage){
+          _pagingUpcoming.appendLastPage(newUpcoming.results!);
+        } else {
+          final nextPageKey = pageKey + 1;
+          _pagingUpcoming.appendPage(newUpcoming.results!, nextPageKey);
+        }
+      } catch (error){
+        _pagingUpcoming.error = error;
+      }
+    }
 
   }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -163,9 +231,9 @@ class _MovieState extends State<MovieScreen> with SingleTickerProviderStateMixin
             child: TabBarView(
               controller: _tabController,
               children: [
-                movieType(Repository().fetchMoviePlaying()),
-                movieType(Repository().fetchMoviePopular()),
-                movieType(Repository().fetchMovieUpcoming())
+                moviePaginated(_pagingNow),
+                moviePaginated(_pagingPop),
+                moviePaginated(_pagingUpcoming),
               ],
 
             ),
@@ -173,6 +241,80 @@ class _MovieState extends State<MovieScreen> with SingleTickerProviderStateMixin
           
         )
       ),
+    );
+  }
+
+  Widget moviePaginated(PagingController<int, MovieData> pagingController){
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.only(left:8.0, right: 8.0, top: 52.0),
+          sliver: PagedSliverGrid<int, MovieData>(
+            pagingController: pagingController,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+              ),
+              builderDelegate: PagedChildBuilderDelegate<MovieData>(
+                  itemBuilder: (context, snapshot, index){
+
+                    String image = snapshot.posterPath == null ? "" :
+                        Config.imageUrl(snapshot.posterPath!);                    return Container(
+                      margin: EdgeInsets.all(5),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14),
+                          color: Colors.red[300]),
+                      child: InkResponse(
+                        onTap: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailScreen(movieData: snapshot),
+                                // Pass the arguments as part of the RouteSettings. The
+                                // DetailScreen reads the arguments from these settings.
+                                settings: RouteSettings(
+                                  arguments: snapshot,
+                                ),
+                              ));
+                        },
+                        child: Stack(
+                          fit: StackFit.loose,
+                          children: [
+                            CachedNetworkImage(imageUrl: image,
+                              imageBuilder: (context, imageProvider){
+                                return Container(
+                                  height: 320,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[200],
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                );
+                              },
+                              placeholder: (context, url) => Container(
+                                width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Center(child: CircularProgressIndicator())),
+                              errorWidget: (context, url, error) => Center(
+                                child: Icon(Icons.broken_image_rounded,
+                                  size: 80.0,),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            showNoMoreItemsIndicatorAsGridChild: true,
+            showNewPageProgressIndicatorAsGridChild: true,
+            showNewPageErrorIndicatorAsGridChild: true,
+            shrinkWrapFirstPageIndicators: true,
+          ),
+        ),
+
+      ],
     );
   }
 

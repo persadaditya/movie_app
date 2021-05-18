@@ -11,9 +11,9 @@ import 'package:movie_app/model/MovieDetail.dart';
 import 'package:movie_app/model/MovieVideo.dart';
 
 class Repository{
-  Future<Movie> fetchMoviePopular() async {
-    final response = await http.get(Config.uriMoviePopular());
-    print("url movie: ${Config.uriMoviePopular().toString()}");
+  Future<Movie> fetchMoviePopular(int page) async {
+    final response = await http.get(Config.uriMoviePopular(page));
+    print("url movie: ${Config.uriMoviePopular(page).toString()}");
 
     if(response.statusCode==200){
       print('response ${response.body.toString()}');
@@ -23,9 +23,9 @@ class Repository{
     }
   }
 
-  Future<Movie> fetchMovieUpcoming() async {
-    final response = await http.get(Config.uriMovieUpcoming());
-    print("url movie: ${Config.uriMovieUpcoming().toString()}");
+  Future<Movie> fetchMovieUpcoming(int page) async {
+    final response = await http.get(Config.uriMovieUpcoming(page));
+    print("url movie: ${Config.uriMovieUpcoming(page).toString()}");
 
     if(response.statusCode==200){
       print('response ${response.body.toString()}');
@@ -35,9 +35,9 @@ class Repository{
     }
   }
 
-  Future<Movie> fetchMoviePlaying() async {
-    final response = await http.get(Config.uriMoviePlaying());
-    print("url movie: ${Config.uriMoviePlaying().toString()}");
+  Future<Movie> fetchMoviePlaying(int page) async {
+    final response = await http.get(Config.uriMoviePlaying(page));
+    print("url movie: ${Config.uriMoviePlaying(page).toString()}");
 
     if(response.statusCode==200){
       print('response ${response.body.toString()}');
@@ -59,9 +59,9 @@ class Repository{
     }
   }
 
-  Future<Movie> fetchSearchMovie(String search) async {
-    final response = await http.get(Config.uriSearchMovie(search));
-    print("url movie: ${Config.uriSearchMovie(search).toString()}");
+  Future<Movie> fetchSearchMovie(String search, int page) async {
+    final response = await http.get(Config.uriSearchMovie(search, page));
+    print("url movie: ${Config.uriSearchMovie(search, page).toString()}");
 
     if(response.statusCode==200){
       print('response ${response.body.toString()}');

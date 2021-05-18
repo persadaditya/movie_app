@@ -18,28 +18,32 @@ class Config{
     return{"api_key": apiKey};
   }
 
-  static Map<String, dynamic> querySearch(String search){
-    return{"api_key": apiKey, "query" : search};
+  static Map<String, dynamic> queryApiKeyPagination(int page){
+    return{"api_key": apiKey, "page": page.toString()};
   }
 
-  static Uri uriMoviePopular(){
-    return Uri.https(baseUrl, "/3/movie/popular", queryApiKey());
+  static Map<String, dynamic> querySearch(String search, int page){
+    return{"api_key": apiKey, "query" : search, "page" : page.toString()};
   }
 
-  static Uri uriMovieUpcoming(){
-    return Uri.https(baseUrl, "/3/movie/upcoming", queryApiKey());
+  static Uri uriMoviePopular(int page){
+    return Uri.https(baseUrl, "/3/movie/popular", queryApiKeyPagination(page));
   }
 
-  static Uri uriMoviePlaying(){
-    return Uri.https(baseUrl, "/3/movie/now_playing", queryApiKey());
+  static Uri uriMovieUpcoming(int page){
+    return Uri.https(baseUrl, "/3/movie/upcoming", queryApiKeyPagination(page));
+  }
+
+  static Uri uriMoviePlaying(int page){
+    return Uri.https(baseUrl, "/3/movie/now_playing", queryApiKeyPagination(page));
   }
 
   static Uri uriMovieLatest(){
     return Uri.https(baseUrl, "/3/movie/latest", queryApiKey());
   }
 
-  static Uri uriSearchMovie(String search){
-    return Uri.https(baseUrl, "/3/search/movie", querySearch(search));
+  static Uri uriSearchMovie(String search, int page){
+    return Uri.https(baseUrl, "/3/search/movie", querySearch(search, page));
   }
   
   static Uri uriCaster(){
