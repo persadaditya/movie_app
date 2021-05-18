@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_app/database/DatabaseHandler.dart';
 import 'package:movie_app/helper/Config.dart';
+import 'package:movie_app/helper/SizeConfig.dart';
 import 'package:movie_app/model/CreditVideo.dart';
 import 'package:movie_app/model/Movie.dart';
 import 'package:movie_app/model/MovieDetail.dart';
@@ -65,7 +66,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         children: [
           CustomScrollView(controller: _scrollController,
             slivers: [
-              SliverAppBar(leading: Padding(
+              SliverAppBar(centerTitle: true,
+                leading: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: ClipOval(
                   child: Material(
@@ -88,7 +90,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(movieData.title!,
                     textAlign: TextAlign.center,
-                    maxLines: 2,),
+                    maxLines: 1,),
                   background: Image.network(Config.imageUrl(backdrop),
                     fit: BoxFit.cover,),
                 ),
@@ -114,7 +116,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                         }
 
 
-                        String runtime = "${snapshot.data!.runtime!} minutes" ;
+                        String runtime = snapshot.data!.runtime == null ? "No data":
+                          "${snapshot.data!.runtime!} minutes" ;
 
                         String year = snapshot.data!.releaseDate!.split("-")[0];
 
@@ -350,6 +353,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   Widget buildTrailer(){
+    SizeConfig().init(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -369,19 +373,23 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
                   return snapshot.data!.results!.isEmpty || snapshot.data!.results!.length == 0 ?
                   Container(
-                    height: 130,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+
+                    ),
                     child: Center(
                       child: Text("no data trailer"),
                     ),
                   ) :
                   SizedBox(
-                    height: 190,
+                    height: SizeConfig.safeBlockVertical * 30,
                     child: ListView.builder(itemCount: snapshot.data!.results!.length,
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemBuilder: (context, index){
                           return Container(
-                            width: 240,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -391,8 +399,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                     CachedNetworkImage(imageUrl: Config.thumbnailYoutube(snapshot.data!.results![index].key!),
                                       imageBuilder: (context, imageProvider){
                                         return Container(
-                                          width: 240,
-                                          height: 140,
+                                          width: SizeConfig.safeBlockHorizontal *60,
+                                          height: SizeConfig.safeBlockVertical *20,
                                           margin: EdgeInsets.only(right: 16),
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
@@ -465,6 +473,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   Widget buildCast(){
+
+    SizeConfig().init(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -473,16 +483,14 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         TextStyle(fontWeight:
         FontWeight.bold, fontSize: 20),),
 
-        Container(
-          height: 350,
-          constraints: BoxConstraints(maxHeight: 700),
-          child: FutureBuilder<CreditVideo>(
-            future: futureCredit,
-            builder: (context, snapshot){
+        FutureBuilder<CreditVideo>(
+          future: futureCredit,
+          builder: (context, snapshot){
 
-              if(snapshot.hasData){
+            if(snapshot.hasData){
+              if(snapshot.data!.cast!.length>0){
                 return SizedBox(
-                  height: 200,
+                  height: SizeConfig.safeBlockHorizontal * 80,
                   child: GridView.builder(
                     padding: EdgeInsets.zero,
                     physics: BouncingScrollPhysics(),
@@ -543,9 +551,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                             ..style = PaintingStyle.stroke
                                             ..strokeWidth = 2
                                             ..color = Colors.grey),
+                                        maxLines: 2,
                                       ),
 
-                                      Text(name, style:
+                                      Text(name, maxLines: 2, style:
                                       TextStyle(fontWeight: FontWeight.bold,
                                         fontSize: 14, color: Colors.white,),
                                       ),
@@ -553,7 +562,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                 ),
                                 Stack(
                                   children: [
-                                    Text("as $character", style:
+                                    Text("as $character", maxLines: 2,style:
                                     TextStyle(fontSize: 12,
                                         foreground: Paint()
                                           ..style = PaintingStyle.stroke
@@ -561,7 +570,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                           ..color = Colors.grey),
                                     ),
 
-                                    Text("as $character", style:
+                                    Text("as $character", maxLines: 2,style:
                                     TextStyle(fontSize: 12,
                                         color: Colors.white60),),
 
@@ -578,22 +587,34 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     itemCount: snapshot.data!.cast!.length,
                   ),
                 );
-              } else if(snapshot.hasError){
+              } else {
                 return Container(
-                  height: 200,
+                  height: 140,
+                  margin: EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300]
+                  ),
                   child: Center(
-                    child: Text(snapshot.error.toString()),
+                    child: Text("No data cast"),
                   ),
                 );
               }
+            } else if(snapshot.hasError){
               return Container(
                 height: 200,
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: Text(snapshot.error.toString()),
                 ),
               );
-            },
-          ),
+            }
+            return Container(
+              height: 200,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          },
         ),
       ],
     );
